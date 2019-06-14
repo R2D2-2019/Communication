@@ -5,18 +5,13 @@
 
  
 char* ssid = "tuskAct2";
-char* password =  "LRRPEdE5";
+char* password = "LRRPEdE5";
  
 uint16_t port = 8080;
 const char * host = "10.42.0.1";
 WiFiClient client;
 
-void setup() {
- 
-    Serial.begin(115200);
-    Serial.print("hello");
-
-    WiFi.begin(ssid, password);
+void connect_to_wifi() {
     while (WiFi.status() != WL_CONNECTED) {
         Serial.println("...");
         delay(100);
@@ -24,11 +19,29 @@ void setup() {
  
     Serial.print("WiFi connected with IP: ");
     Serial.println(WiFi.localIP());
+    
+}
 
+void connect_to_client() {
     while (!client.connect(host, port)) {
-        Serial.println("...");
+        Serial.println("....");
         delay(100);
-    }
+    } 
+
+    Serial.println("Connected to client");
+}
+
+void connect_to_both() {
+    connect_to_wifi();
+    connect_to_client();
+}
+
+void setup() {
+ 
+    Serial.begin(115200);
+    Serial.println("hello");
+
+    //connect_to_both();
 
     SPISlave.onData([](uint8_t * data, size_t len) {
         String message = String((char *)data);
@@ -37,13 +50,21 @@ void setup() {
             SPISlave.setData("Hello Master!");
         } else if (message.equals("Are you alive?")) {
             char answer[33];
-            sprintf(answer, "Alive for %lu seconds!", millis() / 1000);
+            //sprintf(answer, "Alive for %lu seconds!", millis() / 1000);
             SPISlave.setData(answer);
-        } else if (message.equals("Are you connected?"){
-            if (
+        } else if (message.equals("Are you connected?")){
+            if ( !client.connect(host, port) || WiFi.status() != WL_CONNECTED ) {
+                SPISlave.setData("NO");
+            } else {
+                SPISlave.setData("YES");    
+            }
         } else {
             SPISlave.setData("Say what?");
         }
+
+        //connect_to_both();
+
+        //client.print((char *)data);
         Serial.printf("Question: %s\n", (char *)data);
     });
 
