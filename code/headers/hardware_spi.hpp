@@ -23,10 +23,12 @@ private:
     }
 
     void send_byte(uint8_t byte){
+        while (!port->SPI_SR & SPI_SR_TDRE) {}
         port->SPI_TDR = SPI_TDR_TD(byte);
     }
 
     uint8_t receive_byte(){
+        while (!port->SPI_SR & SPI_SR_RDRF) {}
         return port->RDR;
     }
 
@@ -37,15 +39,15 @@ private:
         for (uint_fast8_t i = 0; i < n; ++i){
             send(data_out[n]);
         }
-    
+
     }
 
 public:
     hardware_spi_c(){
         //enable clock for spi peripheral
         PMC->PMC_PCER0 = (0x01 << ID_SPI0);
-        port->SPI_MR |= SPI_MR_MSTR | 0x01;
-        port->->SPI_CSR[]
+        port->SPI_MR |= SPI_MR_MSTR | 0x01 | WDRBT;
+        //port->SPI_CSR[]
 
         enable();
     
