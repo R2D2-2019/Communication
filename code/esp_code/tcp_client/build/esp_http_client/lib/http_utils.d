@@ -1,0 +1,18 @@
+lib/http_utils.o: \
+ /run/media/patrick/Home2/esp/esp-idf/components/esp_http_client/lib/http_utils.c \
+ /run/media/patrick/Home2/esp/esp-idf/components/newlib/platform_include/assert.h \
+ /run/media/patrick/Home2/esp/tcp_client/build/include/sdkconfig.h \
+ /run/media/patrick/Home2/esp/esp-idf/components/esp_http_client/lib/include/http_utils.h \
+ /run/media/patrick/Home2/esp/esp-idf/components/newlib/platform_include/sys/time.h \
+ /run/media/patrick/Home2/esp/esp-idf/components/tcp_transport/include/esp_transport_utils.h
+
+/run/media/patrick/Home2/esp/esp-idf/components/newlib/platform_include/assert.h:
+
+/run/media/patrick/Home2/esp/tcp_client/build/include/sdkconfig.h:
+
+/run/media/patrick/Home2/esp/esp-idf/components/esp_http_client/lib/include/http_utils.h:
+
+/run/media/patrick/Home2/esp/esp-idf/components/newlib/platform_include/sys/time.h:
+
+/run/media/patrick/Home2/esp/esp-idf/components/tcp_transport/include/esp_transport_utils.h:
+/run/media/patrick/Home2/esp/esp-idf/components/esp_http_client/lib/http_utils.c:
