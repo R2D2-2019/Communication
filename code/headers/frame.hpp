@@ -5,7 +5,7 @@
 
 namespace r2d2::communication {
     /**
-     * @brief Generic frame type that contains an byte array/pointer with length.
+     * @brief  frame type that contains an byte array/pointer with length.
      */
     struct frame_s {
         /**
@@ -13,7 +13,7 @@ namespace r2d2::communication {
          */
         size_t size;
         /**
-         * @brief Frame data
+         * @brief Frame data including headers
          */
         uint8_t data[];
     };
