@@ -1,5 +1,5 @@
 #include "hwlib.hpp"
-#include <hardware_usart.hpp>
+#include <esp_32.hpp>
 
 
 int main(void) {
@@ -7,33 +7,26 @@ int main(void) {
     WDT->WDT_MR = WDT_MR_WDDIS;
     hwlib::wait_ms(1000);
 
-    //auto sclk = hwlib::target::pin_out(hwlib::target::pins::d9);
-    //auto mosi = hwlib::target::pin_out(hwlib::target::pins::mosi);
-    //auto miso = hwlib::target::pin_in(hwlib::target::pins::miso);
+    auto sclk = hwlib::target::pin_out(hwlib::target::pins::d9);
+    auto mosi = hwlib::target::pin_out(hwlib::target::pins::mosi);
+    auto miso = hwlib::target::pin_in(hwlib::target::pins::miso);
     auto ss = hwlib::target::pin_out(hwlib::target::pins::d10);
-    hwlib::cout << "start\n";
-    ss.write(1);
 
-    //configure spi bus with chipselect 1
-    auto spi_bus = hwlib::target::hwspi(1);
+    //configure spi bus with cs 0 = pin 10
+    //configure spi bus with spi mode 1
+    //configure with difider 42 ( 84 / 42 = 2Mhz )
+    auto spi_bus = hwlib::target::hwspi(0, hwlib::target::hwspi::SPI_MODE::SPI_MODE1, 42);
 
+    //big size for testing
     size_t size = 100;
-//    uint8_t * received = 0;
     while(1) {
+        //chars to send
         char data[] = "Het duurt te lang";
-        hwlib::cout << "data start\n";
-        ss.write(0);
-        spi_bus.transaction(ss).write_and_read(size ,(uint8_t*)data, nullptr);
-        ss.write(1);
-        hwlib::cout << "data end\n";
-        hwlib::wait_ms(1000);
+        //chars to receive
+        char received[size] = {0};
+        //read and write
+        spi_bus.transaction(ss).write_and_read(size ,(uint8_t*)data, (uint8_t*)received);
+        //show what is received
+        hwlib::cout << (char*)received << '\n';
     }
-
-/*    auto usart = r2d2::usart::hardware_usart_c<r2d2::usart::usart0>(9600);
-
-    while(true){
-        //usart << "heyo!";
-        usart.send('a');
-    }
-*/
 }
