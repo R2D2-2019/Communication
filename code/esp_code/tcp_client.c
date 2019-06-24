@@ -84,7 +84,6 @@ static void tcp_client_task(void *pvParameters) {
 
     while (1) {
 
-#ifdef CONFIG_EXAMPLE_IPV4
         struct sockaddr_in dest_addr;
         dest_addr.sin_addr.s_addr = inet_addr(HOST_IP_ADDR);
         dest_addr.sin_family = AF_INET;
@@ -92,15 +91,6 @@ static void tcp_client_task(void *pvParameters) {
         addr_family = AF_INET;
         ip_protocol = IPPROTO_IP;
         inet_ntoa_r(dest_addr.sin_addr, addr_str, sizeof(addr_str) - 1);
-#else // IPV6
-        struct sockaddr_in6 dest_addr;
-        inet6_aton(HOST_IP_ADDR, &dest_addr.sin6_addr);
-        dest_addr.sin6_family = AF_INET6;
-        dest_addr.sin6_port = htons(PORT);
-        addr_family = AF_INET6;
-        ip_protocol = IPPROTO_IPV6;
-        inet6_ntoa_r(dest_addr.sin6_addr, addr_str, sizeof(addr_str) - 1);
-#endif
 
         int sock = socket(addr_family, SOCK_STREAM, ip_protocol);
         if (sock < 0) {
@@ -150,17 +140,18 @@ static void tcp_client_task(void *pvParameters) {
 
         // Initialize SPI slave interface
         ret = spi_slave_initialize(HSPI_HOST, &buscfg, &slvcfg, 1);
-        assert(ret == ESP_OK);
+        if (ret != ESP_OK) {
+            ESP_LOGE(TAG, "Failed to initialize spi slave");
+            break;
+        }
 
-        memset(recvbuf, 0, 33);
-        spi_slave_transaction_t t;
+        memset(recvbuf, 0, 129);
+        spi_slave_transaction_t t = {0};
         memset(&t, 0, sizeof(t));
 
         while (1) {
             // Clear receive buffer,
-            memset(recvbuf, 0xA5, 129);
-            // sprintf(sendbuf, "This is the receiver, sending data for
-            // transmission number %04d.", n);
+            memset(recvbuf, 0x00, 129);
 
             // Set up a transaction of 128 bytes to send/receive on spi
             t.length = 128 * 8;
@@ -169,7 +160,7 @@ static void tcp_client_task(void *pvParameters) {
 
             ret = spi_slave_transmit(HSPI_HOST, &t, portMAX_DELAY);
             // set send buffer to something sane
-            memset(sendbuf, 0xA5, 129);
+            memset(sendbuf, 0x00, 129);
             int err = send(sock, recvbuf, strlen(recvbuf), 0);
             if (err < 0) {
                 ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
