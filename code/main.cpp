@@ -14,7 +14,7 @@ int main(void) {
 
     //configure spi bus with cs 0 = pin 10
     //configure spi bus with spi mode 1
-    //configure with difider 42 ( 84 / 42 = 2Mhz )
+    //configure with divider 42 ( 84 / 42 = 2Mhz )
     auto spi_bus = hwlib::target::hwspi(0, hwlib::target::hwspi::SPI_MODE::SPI_MODE1, 42);
 
     //big size for testing
