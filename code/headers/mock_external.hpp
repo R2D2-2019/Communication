@@ -54,7 +54,7 @@ namespace r2d2::communication {
         /**
          * @brief set a reaction lambda
          *
-         * @param reaction , a reaction lamda wich can react
+         * @param reaction , a reaction lamda which can react
          */
         void set_send_reaction(
             std::function<void(const r2d2::frame_external_s &,
