@@ -17,4 +17,4 @@ namespace r2d2::communication {
          */
         uint8_t data[];
     };
-}
+} // namespace r2d2::communication

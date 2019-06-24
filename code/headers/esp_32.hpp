@@ -1,7 +1,7 @@
 #pragma once
 
-#include <hwlib.hpp>
 #include <external_connection.hpp>
+#include <hwlib.hpp>
 #include <queue.hpp>
 
 namespace r2d2::communication {
@@ -11,15 +11,13 @@ namespace r2d2::communication {
      * @details extends from external_connection_c
      */
 
-
-    class esp_32_c : public external_connection_c{
+    class esp_32_c : public external_connection_c {
     private:
         hwlib::spi_bus &spi_connection;
         hwlib::pin_out &slave_select;
         r2d2::queue_c<r2d2::frame_external_s, 32> recv_queue;
 
     public:
-
         /**
          * @brief the constructor for the esp32 interface
          *
@@ -35,7 +33,7 @@ namespace r2d2::communication {
          *
          * @param rfame The frame to send to the target, contains binary data
          */
-        void send(const r2d2::frame_external_s &frame) override ;
+        void send(const r2d2::frame_external_s &frame) override;
 
         /**
          * @brief Receives frame from connected target

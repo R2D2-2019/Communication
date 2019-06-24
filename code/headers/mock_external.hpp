@@ -2,28 +2,29 @@
 
 #include <external_connection.hpp>
 #include <frame_types.hpp>
-#include <vector>
 #include <functional>
+#include <vector>
 
 namespace r2d2::communication {
     class mock_external_c : public external_connection_c {
     private:
         std::vector<r2d2::frame_external_s> receive_buffer;
-        std::vector<std::function<void(
-                const r2d2::frame_external_s&,
-                std::vector<r2d2::frame_external_s>&
-        )>> send_reactions;
-    public:
+        std::vector<std::function<void(const r2d2::frame_external_s &,
+                                       std::vector<r2d2::frame_external_s> &)>>
+            send_reactions;
 
+    public:
         /**
          * @brief constructor, nothing to construct
          */
-        mock_external_c() {}
+        mock_external_c() {
+        }
 
         /**
          * @brief send simulates a external_connection_c::send()
          *
-         * @param frame frame to send, does not send but checks in reaction vector for reaction
+         * @param frame frame to send, does not send but checks in reaction
+         * vector for reaction
          */
         void send(const r2d2::frame_external_s &frame) override;
 
@@ -47,17 +48,17 @@ namespace r2d2::communication {
          *
          * @param frames , vector of frames to be set
          */
-        void set_receive_frames(const std::vector<r2d2::frame_external_s> frames);
+        void
+        set_receive_frames(const std::vector<r2d2::frame_external_s> frames);
 
         /**
          * @brief set a reaction lambda
          *
          * @param reaction , a reaction lamda wich can react
          */
-        void set_send_reaction(std::function<void(
-                const r2d2::frame_external_s&,
-                std::vector<r2d2::frame_external_s>& )> reaction);
-
-
+        void set_send_reaction(
+            std::function<void(const r2d2::frame_external_s &,
+                               std::vector<r2d2::frame_external_s> &)>
+                reaction);
     };
 } // namespace r2d2::communication
