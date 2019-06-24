@@ -1,6 +1,6 @@
 # ESP CODE
 ## What esp is used?
-We have used this code with the heltec wifi kit 32. This is because one of the engineers had on lying around. 
+We have used this code with the heltec wifi kit 32. This is because one of the engineers had one lying around. 
 ## How to compile and flash
 This code is written with the use of the official esp_idf from espressif. 
 Here's how to get started: https://docs.espressif.com/projects/esp-idf/en/latest/get-started/ 
