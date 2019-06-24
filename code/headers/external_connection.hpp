@@ -2,7 +2,7 @@
 #include <cstddef>
 #include <cstdint>
 
-#include "frame_s.hpp"
+#include <base_comm.hpp>
 
 namespace r2d2::communication {
     /**
@@ -12,18 +12,18 @@ namespace r2d2::communication {
     public:
         /**
          * @brief Sends frame to connected target
-         * 
+         *
          * @param frame The frame to send to the target, contains binary data
          */
-        virtual void send(const frame_s& frame) = 0;
-        
+        virtual void send(const r2d2::frame_external_s &frame) = 0;
+
         /**
          * @brief Receives frame from connected target
-         * 
+         *
          * @param
          * @return true There is data received
          * @return false No data available
          */
-        virtual bool receive(frame_s& frame) = 0;
+        virtual bool receive(r2d2::frame_external_s &frame) = 0;
     };
-}
+} // namespace r2d2::communication
