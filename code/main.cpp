@@ -24,7 +24,7 @@ int main(void) {
         char received[size] = {0};
         //read and write
         while (!hand.read()){} 
-            spi_bus.transaction(hwlib::pin_out_dummy).write_and_read(size ,(uint8_t*)data, (uint8_t*)received);
+        spi_bus.transaction(hwlib::pin_out_dummy).write_and_read(size ,(uint8_t*)data, (uint8_t*)received);
         //show what is received
         //hwlib::cout << (char*)received << '\n';
         hwlib::wait_ms(1);

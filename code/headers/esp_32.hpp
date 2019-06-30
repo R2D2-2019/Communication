@@ -14,7 +14,7 @@ namespace r2d2::communication {
     class esp_32_c : public external_connection_c {
     private:
         hwlib::spi_bus &spi_connection;
-        hwlib::pin_out &slave_select;
+        hwlib::pin_in &hand_shake;
         r2d2::queue_c<r2d2::frame_external_s, 32> recv_queue;
 
     public:
@@ -22,9 +22,9 @@ namespace r2d2::communication {
          * @brief the constructor for the esp32 interface
          *
          * @param spi_connection The spi bus connected to the esp
-         * @param ss The chip select or slave select connected to the esp
+         * @param hs The hand shake pin connected to the esp
          */
-        esp_32_c(hwlib::spi_bus &spi_connection, hwlib::pin_out &ss);
+        esp_32_c(hwlib::spi_bus &spi_connection, hwlib::pin_in &hs);
 
         /**
          *  @brief Sends external frame to connected target
