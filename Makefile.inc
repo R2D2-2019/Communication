@@ -19,9 +19,9 @@ HEADERS += $(wildcard $(external_comm)/code/headers/*.hpp)
 
 # search for queue
 SEARCH += $(external_comm)/../datastructures/code/headers
-HEADERS += $(wildcard $(USART)/../datastructures/code/headers/queue.hpp)
+HEADERS += $(wildcard $(extrnal_comm)/../datastructures/code/headers/queue.hpp)
 
 # search for internal communication 
 SEARCH += $(external_comm)/../internal_communication/code/headers
-HEADERS += $(wildcard $(USART)/../internal_communication/code/headers/*.hpp)
+HEADERS += $(wildcard $(external_comm)/../internal_communication/code/headers/*.hpp)
 
