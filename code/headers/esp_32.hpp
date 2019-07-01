@@ -35,7 +35,7 @@ namespace r2d2::communication {
          *  @details Sends external frame to connected target,
          *  but also receives a frame if available. It stores this in a queue
          *
-         * @param rfame The frame to send to the target, contains binary data
+         * @param frame The frame to send to the target, contains binary data
          */
         void send(const r2d2::frame_external_s &frame) override;
 

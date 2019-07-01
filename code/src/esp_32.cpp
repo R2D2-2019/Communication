@@ -10,7 +10,7 @@ namespace r2d2::communication {
 
     void esp_32_c::send(const r2d2::frame_external_s &frame) {
         // set the first bite of the buffer to 0
-        // only the first because teh fist byte of an external frame is its length
+        // only the first because the fist byte of an external frame is its length
         uint8_t recv[256] = {0};
         // wait till esp is ready
         while (!hand_shake.read()){}
@@ -28,7 +28,7 @@ namespace r2d2::communication {
     bool esp_32_c::receive(r2d2::frame_external_s &frame) {
         if (recv_queue.empty()) {
             // set the first bite of the buffer to 0
-            // only the first because teh fist byte of an external frame is its length
+            // only the first because the fist byte of an external frame is its length
             uint8_t recv[256] = {0};
             // wait till esp is ready
             while (!hand_shake.read()){}
