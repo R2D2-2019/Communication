@@ -81,6 +81,47 @@ static void tcp_client_task(void *pvParameters) {
     char addr_str[128];
     int addr_family;
     int ip_protocol;
+    
+    esp_err_t ret;
+
+    // Configuration for the SPI bus
+    spi_bus_config_t buscfg = {.mosi_io_num = GPIO_MOSI,
+                               .miso_io_num = GPIO_MISO,
+                               .sclk_io_num = GPIO_SCLK};
+
+    // Configuration for the SPI slave interface
+    spi_slave_interface_config_t slvcfg = {
+        .mode = 1,
+        .spics_io_num = GPIO_CS,
+        .queue_size = 3,
+        .flags = 0,
+        .post_setup_cb = my_post_setup_cb,
+        .post_trans_cb = my_post_trans_cb};
+
+    // Configuration for the handshake line
+    gpio_config_t io_conf = {.intr_type = GPIO_INTR_DISABLE,
+                             .mode = GPIO_MODE_OUTPUT,
+                             .pin_bit_mask = (1 << GPIO_HANDSHAKE)};
+
+    // Configure handshake line as output
+    gpio_config(&io_conf);
+    // Enable pull-ups on SPI lines so we don't detect rogue pulses when no
+    // master is connected.
+    gpio_set_pull_mode(GPIO_MOSI, GPIO_PULLUP_ONLY);
+    gpio_set_pull_mode(GPIO_SCLK, GPIO_PULLUP_ONLY);
+    gpio_set_pull_mode(GPIO_CS, GPIO_PULLUP_ONLY);
+
+    // Initialize SPI slave interface
+    ret = spi_slave_initialize(HSPI_HOST, &buscfg, &slvcfg, 1);
+    assert(ret == ESP_OK);
+    //if (ret != ESP_OK) {
+     //   ESP_LOGE(TAG, "Failed to initialize spi slave");
+     //   break;
+   // }
+
+    memset(recvbuf, 0, 129);
+    spi_slave_transaction_t t ;
+    memset(&t, 0, sizeof(t));
 
     while (1) {
 
@@ -109,49 +150,10 @@ static void tcp_client_task(void *pvParameters) {
         ESP_LOGI(TAG, "Successfully connected");
 
         int n = 0;
-        esp_err_t ret;
-
-        // Configuration for the SPI bus
-        spi_bus_config_t buscfg = {.mosi_io_num = GPIO_MOSI,
-                                   .miso_io_num = GPIO_MISO,
-                                   .sclk_io_num = GPIO_SCLK};
-
-        // Configuration for the SPI slave interface
-        spi_slave_interface_config_t slvcfg = {
-            .mode = 1,
-            .spics_io_num = GPIO_CS,
-            .queue_size = 3,
-            .flags = 0,
-            .post_setup_cb = my_post_setup_cb,
-            .post_trans_cb = my_post_trans_cb};
-
-        // Configuration for the handshake line
-        gpio_config_t io_conf = {.intr_type = GPIO_INTR_DISABLE,
-                                 .mode = GPIO_MODE_OUTPUT,
-                                 .pin_bit_mask = (1 << GPIO_HANDSHAKE)};
-
-        // Configure handshake line as output
-        gpio_config(&io_conf);
-        // Enable pull-ups on SPI lines so we don't detect rogue pulses when no
-        // master is connected.
-        gpio_set_pull_mode(GPIO_MOSI, GPIO_PULLUP_ONLY);
-        gpio_set_pull_mode(GPIO_SCLK, GPIO_PULLUP_ONLY);
-        gpio_set_pull_mode(GPIO_CS, GPIO_PULLUP_ONLY);
-
-        // Initialize SPI slave interface
-        ret = spi_slave_initialize(HSPI_HOST, &buscfg, &slvcfg, 1);
-        if (ret != ESP_OK) {
-            ESP_LOGE(TAG, "Failed to initialize spi slave");
-            break;
-        }
-
-        memset(recvbuf, 0, 129);
-        spi_slave_transaction_t t = {0};
-        memset(&t, 0, sizeof(t));
-
+        
         while (1) {
             // Clear receive buffer,
-            memset(recvbuf, 0x00, 129);
+            memset(recvbuf, 0xA5, 129);
 
             // Set up a transaction of 128 bytes to send/receive on spi
             t.length = 128 * 8;
@@ -159,9 +161,11 @@ static void tcp_client_task(void *pvParameters) {
             t.rx_buffer = recvbuf;
 
             ret = spi_slave_transmit(HSPI_HOST, &t, portMAX_DELAY);
+            ESP_LOGI(TAG, "recieved bytes over spi: %s", recvbuf);
             // set send buffer to something sane
             memset(sendbuf, 0x00, 129);
             int err = send(sock, recvbuf, strlen(recvbuf), 0);
+
             if (err < 0) {
                 ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
                 break;
@@ -181,7 +185,7 @@ static void tcp_client_task(void *pvParameters) {
                 ESP_LOGI(TAG, "%s", sendbuf);
             }
 
-            // vTaskDelay(2000 / portTICK_PERIOD_MS);
+//            vTaskDelay(2000 / portTICK_PERIOD_MS);
         }
 
         if (sock != -1) {
@@ -204,5 +208,5 @@ void app_main() {
      */
     ESP_ERROR_CHECK(example_connect());
 
-    xTaskCreate(tcp_client_task, "tcp_client", 4096, NULL, 5, NULL);
+    xTaskCreatePinnedToCore(tcp_client_task, "tcp_client", 4096, NULL, 5, NULL, 1);
 }
