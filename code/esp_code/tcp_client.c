@@ -114,10 +114,10 @@ static void tcp_client_task(void *pvParameters) {
     // Initialize SPI slave interface
     ret = spi_slave_initialize(HSPI_HOST, &buscfg, &slvcfg, 1);
     assert(ret == ESP_OK);
-    //if (ret != ESP_OK) {
-     //   ESP_LOGE(TAG, "Failed to initialize spi slave");
-     //   break;
-   // }
+    if (ret != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to initialize spi slave");
+        break;
+    }
 
     memset(recvbuf, 0, 129);
     spi_slave_transaction_t t ;
@@ -153,7 +153,7 @@ static void tcp_client_task(void *pvParameters) {
         
         while (1) {
             // Clear receive buffer,
-            memset(recvbuf, 0xA5, 129);
+            memset(recvbuf, 0x00, 129);
 
             // Set up a transaction of 128 bytes to send/receive on spi
             t.length = 128 * 8;
@@ -185,7 +185,6 @@ static void tcp_client_task(void *pvParameters) {
                 ESP_LOGI(TAG, "%s", sendbuf);
             }
 
-//            vTaskDelay(2000 / portTICK_PERIOD_MS);
         }
 
         if (sock != -1) {
@@ -200,6 +199,8 @@ static void tcp_client_task(void *pvParameters) {
 void app_main() {
     ESP_ERROR_CHECK(nvs_flash_init());
     tcpip_adapter_init();
+    // seting hostname at external_comm_0
+    tcpip_adapter_set_hostname(TCPIP_ADAPTER_IF_STA, "external_comm_0");
     ESP_ERROR_CHECK(esp_event_loop_create_default());
 
     /* This helper function configures Wi-Fi or Ethernet, as selected in
