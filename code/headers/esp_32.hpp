@@ -28,7 +28,7 @@ namespace r2d2::communication {
          * @param ss slave select of chip select connected to the esp
          * @param hs The hand shake pin connected to the esp
          */
-        esp_32_c(hwlib::spi_bus &spi_connection, hwlib::pin_in &hs);
+        esp_32_c(hwlib::spi_bus &spi_connection, hwlib::pin_out &ss, hwlib::pin_in &hs);
 
         /**
          *  @brief Sends external frame to connected target
