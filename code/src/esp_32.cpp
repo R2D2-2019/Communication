@@ -27,16 +27,19 @@ namespace r2d2::communication {
 
     bool esp_32_c::receive(r2d2::frame_external_s &frame) {
         if (recv_queue.empty()) {
-            // set the first bite of the buffer to 0
-            // only the first because the first byte of an external frame is its length
-            uint8_t recv[256] = {0};
-            // wait till esp is ready
-            while (!hand_shake.read()){}
-            spi_connection.transaction(slave_select).write_and_read(256, nullptr, recv);
-            // if the length of the external frame received is 0 assume nothing was send
-            // and don't put the frame in the receive que
-            if (recv[0] != 0) {
-                recv_queue.push(*reinterpret_cast<r2d2::frame_external_s *>(&recv));
+            // check if esp is ready
+            if (hand_shake.read()){
+                // set the first bite of the buffer to 0
+                // only the first because the first byte of an external frame is its length
+                uint8_t recv[256] = {0};
+                spi_connection.transaction(slave_select).write_and_read(256, nullptr, recv);
+                // if the length of the external frame received is 0 assume nothing was send
+                // and don't put the frame in the receive que
+                if (recv[0] != 0) {
+                    recv_queue.push(*reinterpret_cast<r2d2::frame_external_s *>(&recv));
+                } else {
+                    return false;
+                }
             } else {
                 return false;
             }
