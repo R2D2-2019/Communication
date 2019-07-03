@@ -20,7 +20,7 @@ int main() {
 
     auto hand_shake = hwlib::target::pin_in(hwlib::target::pins::d5);
 
-    auto pin_out = hwlib::target::pin_out(hwlib::target::pins::d11);
+    auto pin_out = hwlib::target::pin_out(hwlib::target::pins::d13);
 
     auto esp = r2d2::communication::esp_32_c(spi_bus, hwlib::pin_out_dummy, hand_shake);
 

@@ -26,6 +26,7 @@ namespace r2d2::communication {
         //                    reinterpret_cast<const uint8_t *>(&frame), recv);
         spi_connection.transaction(slave_select)
             .write_and_read(frame.length + 4, send, recv);
+        hwlib::wait_ms(10);
         // if the length of the external frame received is 0 assume nothing was send
         // and don't put the frame in the receive que
         if (recv[0] != 0) {
@@ -45,6 +46,10 @@ namespace r2d2::communication {
                 // if the length of the external frame received is 0 assume nothing was send
                 // and don't put the frame in the receive que
                 if (recv[0] != 0) {
+                    //for (uint8_t i = 0; i < recv[0] + 4 ; i++) {
+                    //    hwlib::cout << recv[i];
+                    //}
+                    //hwlib::cout << recv[0] << '\n';
                     recv_queue.push(*reinterpret_cast<r2d2::frame_external_s *>(&recv));
                 } else {
                     return false;

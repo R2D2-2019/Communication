@@ -38,6 +38,7 @@
 #include "protocol_examples_common.h"
 #include "soc/rtc_periph.h"
 #include "tcpip_adapter.h"
+#include "sys/wait.h"
 
 #ifdef CONFIG_EXAMPLE_IPV4
 #define HOST_IP_ADDR CONFIG_EXAMPLE_IPV4_ADDR
@@ -116,7 +117,7 @@ static void tcp_client_task(void *pvParameters) {
     assert(ret == ESP_OK);
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "Failed to initialize spi slave");
-        break;
+        return;
     }
 
     memset(recvbuf, 0, 129);
@@ -164,14 +165,15 @@ static void tcp_client_task(void *pvParameters) {
             ESP_LOGI(TAG, "recieved bytes over spi: %s", recvbuf);
             // set send buffer to something sane
             memset(sendbuf, 0x00, 129);
-            int err = send(sock, recvbuf, strlen(recvbuf), 0);
+            //int err = send(sock, recvbuf, strlen(recvbuf), 0);
+            int err = send(sock, recvbuf, recvbuf[0] + 4, 0);
 
             if (err < 0) {
                 ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
                 break;
             }
 
-            int len = recv(sock, sendbuf, sizeof(sendbuf) - 1, 0);
+            int len = recv(sock, sendbuf, sizeof(sendbuf) , 0);
             // Error occurred during receiving
             if (len < 0) {
                 ESP_LOGE(TAG, "recv failed: errno %d", errno);
@@ -184,7 +186,7 @@ static void tcp_client_task(void *pvParameters) {
                 ESP_LOGI(TAG, "Received %d bytes from %s:", len, addr_str);
                 ESP_LOGI(TAG, "%s", sendbuf);
             }
-
+            vTaskDelay(configTICK_RATE_HZ / 20000);
         }
 
         if (sock != -1) {
@@ -200,7 +202,7 @@ void app_main() {
     ESP_ERROR_CHECK(nvs_flash_init());
     tcpip_adapter_init();
     // seting hostname at external_comm_0
-    tcpip_adapter_set_hostname(TCPIP_ADAPTER_IF_STA, "external_comm_0");
+    tcpip_adapter_set_hostname(TCPIP_ADAPTER_IF_STA, "external");
     ESP_ERROR_CHECK(esp_event_loop_create_default());
 
     /* This helper function configures Wi-Fi or Ethernet, as selected in

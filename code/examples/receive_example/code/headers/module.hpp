@@ -45,8 +45,9 @@ namespace r2d2::button {
                 r2d2::frame_external_s ext{};
 
                 while (!esp.receive(ext)) {}
-
+                
                 frame_button_state_s button_state = *reinterpret_cast<frame_button_state_s *>(&ext.data);
+                hwlib::cout << button_state.pressed << '\n';
 
                 led.write(button_state.pressed);
 
