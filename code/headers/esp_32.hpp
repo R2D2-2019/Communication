@@ -2,7 +2,8 @@
 
 #include <external_connection.hpp>
 #include <hwlib.hpp>
-#include <queue.hpp>
+#include <ringbuffer.hpp>
+#include <cstring>
 
 namespace r2d2::communication {
 
@@ -16,7 +17,7 @@ namespace r2d2::communication {
         hwlib::spi_bus &spi_connection;
         hwlib::pin_out &slave_select;
         hwlib::pin_in &hand_shake;
-        r2d2::queue_c<r2d2::frame_external_s, 32> recv_queue;
+        r2d2::ringbuffer_c<r2d2::frame_external_s, 32> recv_queue;
 
     public:
         /**
