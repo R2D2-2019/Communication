@@ -25,7 +25,7 @@ namespace r2d2::communication {
         //    .write_and_read(frame.length ,
         //                    reinterpret_cast<const uint8_t *>(&frame), recv);
         spi_connection.transaction(slave_select)
-            .write_and_read(5, send, recv);
+            .write_and_read(frame.length + 4, send, recv);
         // if the length of the external frame received is 0 assume nothing was send
         // and don't put the frame in the receive que
         if (recv[0] != 0) {
