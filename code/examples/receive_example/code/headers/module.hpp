@@ -33,15 +33,7 @@ namespace r2d2::button {
          */
         void process() override {
             while (1) {
-//auto frame = comm.get_data();
-
-                // Only handle requests
-                //if (!frame.request) {
-                //    continue;
-                //}
-
-                // Get button state, create frame and send
-                
+               
                 r2d2::frame_external_s ext{};
 
                 while (!esp.receive(ext)) {}

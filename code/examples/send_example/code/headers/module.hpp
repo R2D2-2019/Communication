@@ -33,19 +33,10 @@ namespace r2d2::button {
          */
         void process() override {
             while (1) {
-//auto frame = comm.get_data();
-
-                // Only handle requests
-                //if (!frame.request) {
-                //    continue;
-                //}
-
                 // Get button state, create frame and send
                 frame_button_state_s button_state;
 
                 button_state.pressed = button.read();
-
-                //const uint8_t *data = reinterpret_cast<const uint8_t *>(&button_state);
 
                 r2d2::frame_external_s ext;
                 
@@ -58,7 +49,6 @@ namespace r2d2::button {
                 ext.type = r2d2::frame_type::BUTTON_STATE;
                 ext.length = size;
                 ext.id = { 0, 0 };
-//hwlib::cout << * reinterpret_cast<const uint8_t *>(&ext) << '\n';
 
                 esp.send(ext);
             }

@@ -14,16 +14,9 @@ namespace r2d2::communication {
         uint8_t recv[256] = {0};
         uint8_t send[256] = {frame.length, frame.id.octets[0], frame.id.octets[1], frame.type};
                 memcpy(send+4, frame.data, frame.length );
-        //for (uint8_t i = 0; i < frame.length + 1 ; i++) {
-            //hwlib::cout << send[i];
-        //}
-        //hwlib::cout << '\n';
 
 // wait till esp is ready
         while (!hand_shake.read()){hwlib::cout << 1;}
-        //spi_connection.transaction(slave_select)
-        //    .write_and_read(frame.length ,
-        //                    reinterpret_cast<const uint8_t *>(&frame), recv);
         spi_connection.transaction(slave_select)
             .write_and_read(frame.length + 4, send, recv);
         hwlib::wait_ms(10);
@@ -49,7 +42,6 @@ namespace r2d2::communication {
                     for (uint8_t i = 0; i < recv[0] + 4 ; i++) {
                         hwlib::cout << recv[i];
                     }
-                    //hwlib::cout << recv[0] << '\n';
                     recv_queue.push(*reinterpret_cast<r2d2::frame_external_s *>(&recv));
                 } else {
                     return false;

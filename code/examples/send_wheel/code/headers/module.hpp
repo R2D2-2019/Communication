@@ -127,27 +127,6 @@ namespace r2d2::robos {
 
                      
                 }
-
-                // Get button state, create frame and send
-                //frame_button_state_s button_state;
-
-                //button_state.pressed = button.read();
-
-                //const uint8_t *data = reinterpret_cast<const uint8_t *>(&button_state);
-
-                
-                //size_t size = sizeof(frame_button_state_s);
-
-                //for (size_t i = 0; i < size; i++) {
-                //    ext.data[i] = reinterpret_cast<const uint8_t *>(&button_state)[i];
-                //}
-
-                //ext.type = r2d2::frame_type::BUTTON_STATE;
-                //ext.length = size;
-                //ext.id = { 0, 0 };
-//hwlib::cout << * reinterpret_cast<const uint8_t *>(&ext) << '\n';
-
-                //esp.send(ext);
             }
         }
     };
