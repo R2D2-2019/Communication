@@ -12,11 +12,13 @@ namespace r2d2::communication {
         // set the first bite of the buffer to 0
         // only the first because the first byte of an external frame is its length
         uint8_t recv[256] = {0};
-        // wait till esp is ready
-        while (!hand_shake.read()){}
+        uint8_t send[256] = {frame.length, frame.id.octets[0], frame.id.octets[1], frame.type};
+                memcpy(send+4, frame.data, frame.length );
+
+// wait till esp is ready
         spi_connection.transaction(slave_select)
-            .write_and_read(frame.length,
-                            reinterpret_cast<const uint8_t *>(&frame), recv);
+            .write_and_read(frame.length + 4, send, recv);
+        hwlib::wait_ms(10);
         // if the length of the external frame received is 0 assume nothing was send
         // and don't put the frame in the receive que
         if (recv[0] != 0) {
