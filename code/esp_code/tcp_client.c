@@ -165,7 +165,6 @@ static void tcp_client_task(void *pvParameters) {
             ESP_LOGI(TAG, "recieved bytes over spi: %s", recvbuf);
             // set send buffer to something sane
             memset(sendbuf, 0x00, 129);
-            //int err = send(sock, recvbuf, strlen(recvbuf), 0);
             int err = send(sock, recvbuf, recvbuf[0] + 4, 0);
 
             if (err < 0) {
