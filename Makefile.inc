@@ -12,7 +12,7 @@ SEARCH  += $(external_comm)/code/headers
 SEARCH  += $(external_comm)/code/src
 
 # source files in this library
-SOURCES += (wildcard $(external_comm)/code/src/*.cpp)
+SOURCES += $(wildcard $(external_comm)/code/src/*.cpp)
 
 # header files for the library
 HEADERS += $(wildcard $(external_comm)/code/headers/*.hpp)
