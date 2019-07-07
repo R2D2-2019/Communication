@@ -78,7 +78,6 @@ DMA_ATTR char sendbuf[129] = "";
 DMA_ATTR char recvbuf[129] = "";
 
 static void tcp_client_task(void *pvParameters) {
-    // char rx_buffer[128];
     char addr_str[128];
     int addr_family;
     int ip_protocol;
@@ -185,7 +184,7 @@ static void tcp_client_task(void *pvParameters) {
                 ESP_LOGI(TAG, "Received %d bytes from %s:", len, addr_str);
                 ESP_LOGI(TAG, "%s", sendbuf);
             }
-            vTaskDelay(configTICK_RATE_HZ / 20000);
+
         }
 
         if (sock != -1) {
